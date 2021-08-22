@@ -1,3 +1,5 @@
+import logging
+
 import gitlab
 from telebot import types
 
@@ -35,7 +37,7 @@ class Webhook:
             bot.send_message(chat_id=decoder(receiver['id']), text=message + diff,
                              parse_mode="markdown")
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_reopen(self, receiver):
         message = "В проекте \"{0}\" пользователем {1} " \
@@ -45,7 +47,7 @@ class Webhook:
         try:
             bot.send_message(chat_id=decoder(receiver['id']), text=message)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_update(self, receiver):
         message = "В Merge Request {0} произошло новое событие.".format(self.mg_title)
@@ -56,28 +58,28 @@ class Webhook:
         try:
             bot.send_message(chat_id=decoder(receiver['id']), text=message)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_new(self, receiver):
         message = "В Merge Request {0} произошло новое событие.".format(self.mg_title)
         try:
             bot.send_message(chat_id=decoder(receiver['id']), text=message)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_undefined(self, receiver):
         message = "В репозитории {0} произошло неопознанное событие".format(self.project_name)
         try:
             bot.send_message(chat_id=decoder(receiver['id']), text=message)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_others(self, receiver, result):
         message = "А так же еще изменения в {0} файлах".format(len(result['diffs']) - 1)
         try:
             bot.send_message(chat_id=decoder(receiver['id']), text=message)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
 
     def send_button(self, receiver):
         inline_item1 = types.InlineKeyboardButton('Merge Request', url=self.merge_request_url)
@@ -89,4 +91,4 @@ class Webhook:
                                   "перейдя по ссылке.",
                              reply_markup=inline_bt1)
         except telebot.apihelper.ApiException:
-            print("The chat was not founded. It looks like a trouble with db :c")
+            logging.error("The chat was not founded. It looks like a trouble with db :c")
