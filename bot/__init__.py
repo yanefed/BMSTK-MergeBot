@@ -1,5 +1,6 @@
 import cherrypy
 import webhook
+import logging
 
 from bot import config
 from bot.merger_bot import bot, db, decoder, encoder, key
@@ -12,7 +13,7 @@ class WebhookServer(object):
         # raw_body = cherrypy.request.body.read()
         raw_json = cherrypy.request.json  # получаем вебхук
         if raw_json['object_kind'] == 'merge_request':  # если вебхук вызван мержреквестом
-            print(raw_json)
+            logging.debug(raw_json)
 
             # Парсинг вебхука ########################################################################
             webhook_object = webhook.Webhook(raw_json)
@@ -26,7 +27,7 @@ class WebhookServer(object):
                 private_key = db.token.find_one({'idGitLab': encoder(user['username'])})
                 # достаем ключ авторизации пользователя
                 if private_key is None:
-                    print("Warning! No user was found to a merge request!")
+                    logging.error("Warning! No user was found to a merge request!")
                 else:
                     if action is None:
                         continue
