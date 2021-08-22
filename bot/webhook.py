@@ -1,3 +1,4 @@
+import gitlab
 from telebot import types
 
 from bot.merger_bot import bot, decoder
@@ -14,6 +15,13 @@ class Webhook:
         self.author_name = raw_json['user']['name']  # имя автора merge request
         self.merge_request_url = raw_json['object_attributes']['url']  # адрес страницы merge request
         self.mg_title = raw_json['object_attributes']['title']  # заголовок мерд реквеста
+
+    def get_repo_compare(self, private_key):
+        # авторизуемся для каждого юзера по последнему токену
+        gl = gitlab.Gitlab('https://git.iu7.bmstu.ru/', private_token=decoder(private_key['token'][-1]))
+        # ['token'][-1]
+        project = gl.projects.get(self.project_id)  # находим проект
+        return project.repository_compare(self.target_branch, self.source_branch)
 
     def send_open(self, receiver, file):
         diff = "```" + str(file['diff']).replace("```", "\`\`\`") + "```"

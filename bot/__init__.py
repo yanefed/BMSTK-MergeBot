@@ -1,5 +1,4 @@
 import cherrypy
-import gitlab
 import webhook
 
 from bot import config
@@ -21,23 +20,19 @@ class WebhookServer(object):
                 action = raw_json['object_attributes']['action']  # действие
             except KeyError:
                 action = None
-            result = None
             ##########################################################################################
 
-            for i in webhook_object.assignees_array:  # для каждого пользователя
-                private_key = db.token.find_one(
-                    {'idGitLab': encoder(i['username'])})  # достаем ключ авторизации пользователя
+            for user in webhook_object.assignees_array:  # для каждого пользователя
+                private_key = db.token.find_one({'idGitLab': encoder(user['username'])})
+                # достаем ключ авторизации пользователя
                 if private_key is None:
                     print("Warning! No user was found to a merge request!")
                 else:
-                    # авторизуемся для каждого юзера по последнему токену
-                    gl = gitlab.Gitlab('https://git.iu7.bmstu.ru/',
-                                       private_token=decoder(private_key['token'][-1]))  # ['token'][-1]
-                    project = gl.projects.get(webhook_object.project_id)  # находим проект
-                    if action is not None:
-                        result = project.repository_compare(webhook_object.target_branch, webhook_object.source_branch)
-                    for receiver in db.token.find({'idGitLab': encoder(i['username'])}):
-                        if action is not None and result:
+                    if action is None:
+                        continue
+                    result = webhook_object.get_repo_compare(private_key)
+                    for receiver in db.token.find({'idGitLab': encoder(user['username'])}):
+                        if result:
                             # для каждого телеграм аккаунта, прикрепленного к этому юзеру
                             for j, file in enumerate(result['diffs']):
                                 if action == 'open' or action == 'merged':
