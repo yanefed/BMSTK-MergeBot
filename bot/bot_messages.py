@@ -1,3 +1,4 @@
+from bot.config import OUR_URL
 from merger_bot import bot, db, decoder, encoder, timer
 from telebot import types
 import gitlab
@@ -316,8 +317,8 @@ def send_instruction(message):
                      parse_mode="html")
 
     bot.send_message(message.chat.id,
-                     "Если вы владелец репозитория, зайти в его настройки -> "
-                     "Webhooks и в поле адреса URL вписать наш адрес: http://64.227.126.203:443.",
+                     f"Если вы владелец репозитория, зайти в его настройки -> "
+                     "Webhooks и в поле адреса URL вписать наш адрес: {0}.".format(OUR_URL),
                      parse_mode="html")
 
     bot.send_message(message.chat.id,

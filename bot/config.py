@@ -8,3 +8,5 @@ WEBHOOK_SSL_PRIV = './SSL/webhook_pkey.pem'  # Путь к приватному 
 
 WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % merger_bot.telegram_token
+
+OUR_URL = "put yours here"
