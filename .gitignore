@@ -302,11 +302,6 @@ pyvenv.cfg
 pip-selfcheck.json
 
 ./bot/SSL/
-.idea/.gitignore
-.idea/1sem_practic.iml
-.idea/inspectionProfiles/
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
 temp.py
 ./bot/bot.py
+.idea
