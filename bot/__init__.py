@@ -15,13 +15,8 @@ class WebhookServer(object):
         if raw_json['object_kind'] == 'merge_request':  # если вебхук вызван мержреквестом
             logging.debug(raw_json)
 
-            # Парсинг вебхука ########################################################################
             webhook_object = webhook.Webhook(raw_json)
-            try:
-                action = raw_json['object_attributes']['action']  # действие
-            except KeyError:
-                action = None
-            ##########################################################################################
+            action = raw_json['object_attributes'].get('action', None)  # действие
 
             for user in webhook_object.assignees_array:  # для каждого пользователя
                 private_key = db.token.find_one({'idGitLab': encoder(user['username'])})
